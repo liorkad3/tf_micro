@@ -54,29 +54,29 @@ class SpeakerEncoder(nn.Module):
     def forward(self, x):        
         y = self.conv_stack(x.unsqueeze(1))
         y = self.conv_down(y)
+        print(y.shape)
         emb_spk = self.dense(y)
         emb_spk = F.normalize(emb_spk, p=2, dim=1)
         log_p_s_x = self.fc(emb_spk)
         return emb_spk, log_p_s_x
 
 if __name__ == "__main__":
-    b = 2
+    b = 4
     x = torch.randn(b, 80, 32)
     S = SpeakerEncoder(2)
     e, s = S(x)
-    print(s.shape)
-    print(e.shape)
-    torch.save(S, 't_model.pt')
+    print(s.shape, e.shape)
+    # torch.save(S, 't_model.pt')
 
-    torch.onnx.export(
-        S,
-        x,
-        't_model.onnx',
-        opset_version=12,
-        do_constant_folding=True,
-        keep_initializers_as_inputs=True
+    # torch.onnx.export(
+    #     S,
+    #     x,
+    #     't_model.onnx',
+    #     opset_version=12,
+    #     do_constant_folding=True,
+    #     keep_initializers_as_inputs=True
 
-    )
+    # )
     # x = torch.Tensor([[1, -6, 7, 4], [2, 6, -12, 0]])
     # y = F.normalize(x, p=2, dim=1)
 

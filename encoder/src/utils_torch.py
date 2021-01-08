@@ -128,3 +128,8 @@ class Downsample(nn.Module):
     def forward(self, input):
         input_pad = F.pad(input, (1, 1, 1, 1), 'reflect')
         return F.conv2d(input_pad, self.filt, stride=self.stride, padding=0, groups=input.shape[1])
+
+
+if __name__ == "__main__":
+    m = Downsample(channels=64)
+    print(m.filt.shape)
