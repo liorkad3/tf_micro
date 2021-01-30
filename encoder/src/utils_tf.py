@@ -2,20 +2,12 @@ import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow_addons as tfa
 
-def wn_conv2d(x, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1,
- prefix='wn_conv'):
-
-    out = tfa.layers.WeightNormalization(layers.Conv2D(
-            out_channels, kernel_size, strides=stride, padding='same',
-            dilation_rate=dilation, groups=groups, use_bias=False))(x)
-    return out
-    
 
 def WnConv2d(*args, **kwargs):
-    return tfa.layers.WeightNormalization(layers.Conv2D(*args, **kwargs))
+    return tfa.layers.WeightNormalization(layers.Conv2D(*args, **kwargs), data_init=True)
 
 def WnDense(*args, **kwargs):
-    return tfa.layers.WeightNormalization(layers.Dense(*args, **kwargs))
+    return tfa.layers.WeightNormalization(layers.Dense(*args, **kwargs), data_init=True)
 
 
 def ConvBN2d(*args, **kwargs):

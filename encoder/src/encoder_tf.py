@@ -18,17 +18,14 @@ class Encoder(tf.keras.Model):
 
             WnConv2d(ngf, (9, 5), strides=1, dilation_rate=3),
             tf.keras.layers.LeakyReLU(alpha=0.2),
-
-            # tf.keras.layers.Conv2D(ngf, (9, 5), dilation_rate=2 strides=1, use_bias=False)
         ])
 
         self.conv_down = tf.keras.Sequential([
-            WnConv2d(ngf*2, 3, strides=2, padding='same'),
-
-            WnConv2d(ngf*4, 3, strides=2, padding='same'),
-
+            WnConv2d(ngf*2, 3, strides=1, padding='same'),
+            DownSample(ngf*2, filt_size=3, stride=2),
+            WnConv2d(ngf*4, 3, strides=1, padding='same'),
+            DownSample(ngf*4, filt_size=3, stride=2),
             WnConv2d(spk_dim, (3, 1), strides=1),
-
         ])
 
         self.dense = tf.keras.Sequential([
@@ -101,11 +98,11 @@ class Encoder2(tf.keras.Model):
 
 
     def call(self, x):
-        x = tf.expand_dims(x, axis=3)
+        # x = tf.expand_dims(x, axis=3)
         y = self.conv_stack(x)
         y = self.conv_down(y)
         emb_spk = self.dense(y)
-        emb_spk = tf.math.l2_normalize(emb_spk, axis=1)
+        # emb_spk = tf.math.l2_normalize(emb_spk, axis=1)
         # emb_spk = tf.linalg.normalize(emb_spk, axis=1)[0]
         log_p_s_x = self.fc(emb_spk)
         return emb_spk, log_p_s_x

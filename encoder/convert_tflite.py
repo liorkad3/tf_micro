@@ -15,16 +15,18 @@ MODEL_NO_QUANT_TFLITE = MODELS_DIR + 'model_no_quant.tflite'
 MODEL_TFLITE = MODELS_DIR + 'model.tflite'
 
 model = Encoder2(2)
-input_shape = (1, 80, 32)
+input_shape = (1, 80, 32, 1)
 x = tf.random.normal(input_shape)
 
 e, s = model(x)
 print(e.shape, s.shape)
 
-# Convert the model to the TensorFlow Lite format without quantization
-converter = tf.lite.TFLiteConverter.from_keras_model(model)
-model_no_quant_tflite = converter.convert()
+tf.saved_model.save(model, MODEL_TF)
 
+# Convert the model to the TensorFlow Lite format without quantization
+converter = tf.lite.TFLiteConverter.from_saved_model(MODEL_TF)
+# converter = tf.lite.TFLiteConverter.from_keras_model(model)
+model_no_quant_tflite = converter.convert()
 # # Save the model to disk
 open(MODEL_NO_QUANT_TFLITE, "wb").write(model_no_quant_tflite)
 
