@@ -1,3 +1,4 @@
 *.onnx
 *.pt
 encoder/src/test_torch.py
+/logs
